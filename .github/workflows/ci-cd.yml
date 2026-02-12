@@ -62,12 +62,15 @@ jobs:
             echo "✅ VITE_OPEN_WEATHER_API_URL 已設定: ${{ vars.VITE_OPEN_WEATHER_API_URL }}"
           fi
 
-           # 檢查 secrets 並顯示值（測試用）
+          
+          # 檢查 secrets 並安全顯示前 4 個字
           if [ -z "${{ secrets.VITE_OPEN_WEATHER_API_KEY }}" ]; then
             echo "❌ Error: VITE_OPEN_WEATHER_API_KEY secret 未設定"
             exit 1
           else
-            echo "✅ VITE_OPEN_WEATHER_API_KEY 已設定，值為: ${{ secrets.VITE_OPEN_WEATHER_API_KEY }}"
+            SECRET="${{ secrets.VITE_OPEN_WEATHER_API_KEY }}"
+            PREFIX="${SECRET:0:4}"  # 取前 4 個字
+            echo "✅ VITE_OPEN_WEATHER_API_KEY 已設定，值前 4 個字為: $PREFIX****"
           fi
 
       - name: 下載程式碼倉庫
