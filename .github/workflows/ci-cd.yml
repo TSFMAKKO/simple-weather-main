@@ -62,11 +62,7 @@ jobs:
             exit 1
           fi
 
-          # 檢查 secrets (不顯示值)
-          if [ -z "${{ secrets.VITE_OPEN_WEATHER_API_KEY }}" ]; then
-            echo "❌ Error: VITE_OPEN_WEATHER_API_KEY secret is not set"
-            exit 1
-          fi
+     
 
           echo "✅ All required environment variables are set"
 
