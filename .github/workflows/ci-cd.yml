@@ -38,3 +38,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+
+
+      - name: Install dependencies # 安裝相依套件
+        run: npm ci
