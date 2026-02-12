@@ -1,24 +1,25 @@
-name: 持續整合 (CI)  # workflow 名稱，可自訂
+name: 持續整合 (CI/CD)
 
 on:
   push:
-    branches: [main]  # 當 main 分支有 push 時觸發
-  pull_request:       # 當建立 PR 時觸發
-  workflow_dispatch:
+    branches: [main]        # 當 main 分支有 push 時觸發
+  pull_request:             # 當建立 PR 時觸發
+  workflow_dispatch:        # 可以手動觸發 workflow
 
 permissions:
-  contents: write # 允許部署到 gh-pages 分支
+  contents: write           # 允許部署到 gh-pages 分支
 
 jobs:
-  ci:               # job ID，可自訂
-    runs-on: ubuntu-latest  # 固定語法，指定執行環境為 Ubuntu
+  ci:
+    name: 建置與檢查環境
+    runs-on: ubuntu-latest
 
-    steps:              # 固定語法，放置多個步驟
-      - name: 下載程式碼倉庫  # step 顯示名稱，可自訂
-        uses: actions/checkout@v6  # 固定語法，使用官方 action 下載程式碼
+    steps:
+      - name: 下載程式碼倉庫
+        uses: actions/checkout@v6
 
-      - name: 檢查程式碼倉庫狀態      # step 顯示名稱，可自訂
-        run: |                     # 固定語法，用 shell 指令
+      - name: 檢查程式碼倉庫狀態
+        run: |
           echo "📋 作業系統資訊"
           cat /etc/os-release
 
@@ -31,61 +32,53 @@ jobs:
           ls -al
 
           echo ""
-          echo "🟢 Node.js 版本"
-          node -v
-
-          echo ""
           echo "🌿 Git 分支資訊"
           git branch -vv
 
-      - name: Node.js 環境 # 設定 Node.js 環境
+      - name: 設定 Node.js 環境
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
-
-      - name: 安裝相依套件 # 安裝相依套件
+      - name: 安裝相依套件
         run: npm ci
 
-      - name: Lint檢查
+      - name: Lint 檢查
         run: npm run lint
 
   deploy:
+    name: 部署到 GitHub Pages
     runs-on: ubuntu-latest
-    needs: ci
+    needs: ci          # 依賴 CI job 成功
+
     steps:
-      - name: Validate Environment Variables
+      - name: 檢查環境變數
         run: |
-          # 檢查 variables (可以顯示值)
-          if [ -z "${{ vars.VITE_OPEN_WEATHER_API_URL }}"
-          echo "${{ vars.VITE_OPEN_WEATHER_API_URL }}"
-          ]
-          ; then
-            echo "❌ Error: VITE_OPEN_WEATHER_API_URL variable is not set"
+          # 檢查 vars
+          if [ -z "${{ vars.VITE_OPEN_WEATHER_API_URL }}" ]; then
+            echo "❌ Error: VITE_OPEN_WEATHER_API_URL 變數未設定"
             exit 1
+          else
+            echo "✅ VITE_OPEN_WEATHER_API_URL 已設定: ${{ vars.VITE_OPEN_WEATHER_API_URL }}"
           fi
 
           # 檢查 secrets (不顯示值)
-          if [ -z "${{ secrets.VITE_OPEN_WEATHER_API_KEY }}" 
-          echo "${{ secrets.VITE_OPEN_WEATHER_API_KEY }}"
-          
-          ]
-          ; then
-            echo "❌ Error: VITE_OPEN_WEATHER_API_KEY secret is not set"
+          if [ -z "${{ secrets.VITE_OPEN_WEATHER_API_KEY }}" ]; then
+            echo "❌ Error: VITE_OPEN_WEATHER_API_KEY secret 未設定"
             exit 1
+          else
+            echo "✅ VITE_OPEN_WEATHER_API_KEY 已設定"
           fi
 
-          echo "✅ All required environment variables are set"
-
-      - name: Checkout repository
+      - name: 下載程式碼倉庫
         uses: actions/checkout@v6
 
-      - name: Setup Node.js
+      - name: 設定 Node.js 環境
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
-      - name: Install dependencies and Build
+      - name: 安裝依賴並建置
         env:
           VITE_OPEN_WEATHER_API_URL: ${{ vars.VITE_OPEN_WEATHER_API_URL }}
           VITE_OPEN_WEATHER_API_KEY: ${{ secrets.VITE_OPEN_WEATHER_API_KEY }}
@@ -93,8 +86,8 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy to GitHub Pages
+      - name: 部署到 GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages
-          folder: dist
+          branch: gh-pages       # 部署目標分支
+          folder: dist           # 建置產物目錄
