@@ -1,0 +1,14 @@
+name: CI 
+
+on:
+  push:
+    branches: [main]
+    pull_request:
+
+  jobs:
+      ci:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository # 將 repo 下載到 runner 中
+            uses: actions/checkout@v6
+
