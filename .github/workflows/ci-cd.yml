@@ -6,7 +6,7 @@ on:
   pull_request:       # 當建立 PR 時觸發
 
 jobs:
-  ci工作:               # job ID，可自訂
+  ci:               # job ID，可自訂
     runs-on: ubuntu-latest  # 固定語法，指定執行環境為 Ubuntu
 
     steps:              # 固定語法，放置多個步驟
