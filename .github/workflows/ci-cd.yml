@@ -34,11 +34,11 @@ jobs:
           echo "🌿 Git 分支資訊"
           git branch -vv
 
-      - name: Setup Node.js # 設定 Node.js 環境
+      - name: Node.js 環境 # 設定 Node.js 環境
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
 
-      - name: Install dependencies # 安裝相依套件
+      - name: 安裝相依套件 # 安裝相依套件
         run: npm ci
