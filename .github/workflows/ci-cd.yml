@@ -1,29 +1,29 @@
-name: CI  # workflow 名稱，可自訂
+name: 持續整合 (CI)  # workflow 名稱，可自訂
 
 on:
   push:
-    branches: [main]  # 監聽 main 分支
-  pull_request:       # 監聽 PR
+    branches: [main]  # 當 main 分支有 push 時觸發
+  pull_request:       # 當建立 PR 時觸發
 
 jobs:
-  ci:                  # job ID，可自訂
-    runs-on: ubuntu-latest  # 固定語法，指定 runner
+  ci工作:               # job ID，可自訂
+    runs-on: ubuntu-latest  # 固定語法，指定執行環境為 Ubuntu
 
-    steps:              # 固定語法
-      - name: Checkout repository  # step 顯示名稱，可自訂
-        uses: actions/checkout@v6  # 固定語法，用 action
+    steps:              # 固定語法，放置多個步驟
+      - name: 下載程式碼倉庫  # step 顯示名稱，可自訂
+        uses: actions/checkout@v6  # 固定語法，使用官方 action 下載程式碼
 
-      - name: Check repository      # step 顯示名稱，可自訂
+      - name: 檢查程式碼倉庫狀態      # step 顯示名稱，可自訂
         run: |                     # 固定語法，用 shell 指令
           echo "📋 作業系統資訊"
           cat /etc/os-release
 
           echo ""
-          echo "📂 目前路徑"
+          echo "📂 目前工作目錄"
           pwd
 
           echo ""
-          echo "📁 檔案列表"
+          echo "📁 目錄檔案列表"
           ls -al
 
           echo ""
@@ -31,5 +31,5 @@ jobs:
           node -v
 
           echo ""
-          echo "🌿 分支資訊"
+          echo "🌿 Git 分支資訊"
           git branch -vv
