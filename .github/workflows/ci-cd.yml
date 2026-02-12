@@ -42,3 +42,6 @@ jobs:
 
       - name: 安裝相依套件 # 安裝相依套件
         run: npm ci
+
+      - name: Lint檢查
+        run: npm run lint
